@@ -7,7 +7,11 @@
     </head>
     <body>
         <h1 style="text-align: center">Welcome to chat app by devilksk</h1>
-        <button id="push">Push Notification</button>
+        <div id="chat" style="text-align: center"></div>
+        <div style="text-align: center">
+            <input id="message" placeholder="Type Your message" type="text" />
+            <button id="push">Send Message</button>
+        </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/chat.js"></script>
     </body>
