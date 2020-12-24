@@ -16,12 +16,15 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public'))); //setting the static path to look for at last when no where link to be found
 
 io.on('connection', (socket) => {
-    console.log('New user in websocket connected!');
+    socket.broadcast.emit('message', 'New User Joined the chat.');
     const welcomeString =
         'Welcome to the chat up we hope you bought some pizza with you!';
-    socket.emit('welcome', welcomeString);
+    socket.emit('message', welcomeString);
     socket.on('sendMessage', (msg) => {
         io.emit('chatMessage', msg);
+    });
+    socket.on('disconnect', function () {
+        socket.broadcast.emit('message', 'A user has left the chat!');
     });
     // socket.emit('updatedCount', users);
     // socket.on('notify', () => {
