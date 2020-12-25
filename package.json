@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/Kabi4/Realtime-Chat-App-Api#readme",
   "dependencies": {
+    "bad-words": "^3.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "hbs": "^4.1.1",
+    "moment": "^2.29.1",
     "mongoose": "^5.11.8",
     "socket.io": "^3.0.4"
   },

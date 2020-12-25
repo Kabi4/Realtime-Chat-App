@@ -1,6 +1,8 @@
 require('dotenv').config({ path: __dirname + '/.env' });
 const http = require('http');
+const Filter = require('bad-words');
 const express = require('express');
+const moment = require('moment');
 const socketio = require('socket.io');
 const path = require('path');
 
@@ -20,8 +22,14 @@ io.on('connection', (socket) => {
     const welcomeString =
         'Welcome to the chat up we hope you bought some pizza with you!';
     socket.emit('message', welcomeString);
-    socket.on('sendMessage', (msg) => {
-        io.emit('chatMessage', msg);
+    socket.on('sendMessage', (msg, isLocation, timeStamp, callback) => {
+        const filter = new Filter();
+        const createdAt = moment(timeStamp).format('h:mm a');
+        if (filter.isProfane(msg)) {
+            return callback('error');
+        }
+        io.emit('chatMessage', msg, isLocation, createdAt);
+        callback();
     });
     socket.on('disconnect', function () {
         socket.broadcast.emit('message', 'A user has left the chat!');
