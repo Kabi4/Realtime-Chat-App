@@ -18,11 +18,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public'))); //setting the static path to look for at last when no where link to be found
 
 io.on('connection', (socket) => {
-    const welcomeString =
-        'Welcome to the chat up we hope you bought some pizza with you!';
     // socket.emit('message', welcomeString, 'hotpink');
     // socket.broadcast.emit('message', `${username} Joined the chat.`, 'green');
     socket.on('join', ({ username, roomname }) => {
+        const welcomeString = `Welcome to the ${roomname} room we hope you bought some pizza with you!`;
         socket.join(roomname);
         socket.emit('message', welcomeString, 'hotpink');
         socket.broadcast
