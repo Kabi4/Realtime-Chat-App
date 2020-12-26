@@ -118,3 +118,8 @@ $locButton.addEventListener('click', () => {
 });
 
 socket.emit('join', { username, roomname });
+
+socket.on('error', (error) => {
+    alert(error);
+    location.href = '/';
+});

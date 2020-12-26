@@ -12,8 +12,11 @@ const addUser = ({ id, username, roomname }) => {
         };
     }
     const doOccupied = users.some(
-        (ele) => ele.username === username && ele.roomname === roomname
+        (ele) =>
+            ele.username === username.trim().toLowerCase() &&
+            ele.roomname === roomname.trim().toLowerCase()
     );
+    // console.log(doOccupied);
     if (doOccupied) {
         // console.log({
         //     error: 'User name already taken!',
@@ -27,6 +30,10 @@ const addUser = ({ id, username, roomname }) => {
         roomname: roomname.trim().toLowerCase(),
         id,
     });
+    // console.log(users);
+    return {
+        error: null,
+    };
 };
 
 const removeUser = ({ id }) => {
@@ -40,6 +47,9 @@ const removeUser = ({ id }) => {
         };
     }
     users.splice(user, 1);
+    return {
+        error: null,
+    };
 };
 
 const getUser = ({ id }) => {

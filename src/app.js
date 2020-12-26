@@ -5,6 +5,7 @@ const express = require('express');
 const moment = require('moment');
 const socketio = require('socket.io');
 const path = require('path');
+const usersManager = require('./utils/user');
 
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +21,19 @@ app.use(express.static(path.join(__dirname, '../public'))); //setting the static
 io.on('connection', (socket) => {
     // socket.emit('message', welcomeString, 'hotpink');
     // socket.broadcast.emit('message', `${username} Joined the chat.`, 'green');
+
     socket.on('join', ({ username, roomname }) => {
+        const { error } = usersManager.addUser({
+            username,
+            roomname,
+            id: socket.id,
+        });
+        console.log(error);
+        if (error) {
+            socket.emit('error', error);
+            return;
+        }
+
         const welcomeString = `Welcome to the ${roomname} room we hope you bought some pizza with you!`;
         socket.join(roomname);
         socket.emit('message', welcomeString, 'hotpink');
@@ -28,6 +41,12 @@ io.on('connection', (socket) => {
             .to(roomname)
             .emit('message', `${username} Joined the chat.`, 'green');
         socket.on('disconnect', function () {
+            const { error } = usersManager.removeUser({ id: socket.id });
+            if (error) {
+                socket.emit('error', error);
+                socket.emit('message', error, 'red');
+                return;
+            }
             socket.broadcast
                 .to(roomname)
                 .emit('message', `${username} has left the chat!`, 'red');
