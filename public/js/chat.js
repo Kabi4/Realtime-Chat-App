@@ -89,7 +89,7 @@ $locButton.addEventListener('click', () => {
     loc.getCurrentPosition((position) => {
         socket.emit(
             'sendMessage',
-            `My location is longitude:|${position.coords.longitude}| & latitude:|${position.coords.latitude}|.`,
+            `My location is longitude: { ${position.coords.longitude} } || latitude: { ${position.coords.latitude} }.`,
             `https://google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`,
             Date.now(),
             (error) => {
