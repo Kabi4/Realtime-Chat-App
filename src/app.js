@@ -18,10 +18,22 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public'))); //setting the static path to look for at last when no where link to be found
 
 io.on('connection', (socket) => {
-    socket.broadcast.emit('message', 'New User Joined the chat.');
     const welcomeString =
         'Welcome to the chat up we hope you bought some pizza with you!';
-    socket.emit('message', welcomeString);
+    // socket.emit('message', welcomeString, 'hotpink');
+    // socket.broadcast.emit('message', `${username} Joined the chat.`, 'green');
+    socket.on('join', ({ username, roomname }) => {
+        socket.join(roomname);
+        socket.emit('message', welcomeString, 'hotpink');
+        socket.broadcast
+            .to(roomname)
+            .emit('message', `${username} Joined the chat.`, 'green');
+        socket.on('disconnect', function () {
+            socket.broadcast
+                .to(roomname)
+                .emit('message', `${username} has left the chat!`, 'red');
+        });
+    });
     socket.on('sendMessage', (msg, isLocation, timeStamp, callback) => {
         const filter = new Filter();
         const createdAt = moment(timeStamp).format('h:mm a');
@@ -31,9 +43,9 @@ io.on('connection', (socket) => {
         io.emit('chatMessage', msg, isLocation, createdAt);
         callback();
     });
-    socket.on('disconnect', function () {
-        socket.broadcast.emit('message', 'A user has left the chat!');
-    });
+    // socket.on('disconnect', function () {
+    //     socket.broadcast.emit('message', 'An user has left the chat!', 'red');
+    // });
     // socket.emit('updatedCount', users);
     // socket.on('notify', () => {
     //     users++;

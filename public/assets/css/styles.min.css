@@ -12,4 +12,13 @@
     
     .chat__sidebar::-webkit-scrollbar-thumb:hover {
     background: darkgray;
+    }.alert{
+        width: fit-content;
+        border: 1px solid darkgrey;
+        box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+        margin: 15px auto;
+        padding: 5px;
+    }
+    .alert > h3{
+        text-shadow: 2px 2px 4px lightblue;
     }

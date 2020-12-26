@@ -15,9 +15,19 @@ const $chat = document.querySelector('#chat');
 
 const $msgchattemp = document.querySelector('#message-template').innerHTML;
 const $locchattemp = document.querySelector('#location-template').innerHTML;
+const $alerttemp = document.querySelector('#alert-template').innerHTML;
 
-socket.on('message', (msg) => {
-    console.log(msg);
+const { username, roomname } = Qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+});
+
+socket.on('message', (msg, color) => {
+    const htmllink = Mustache.render($alerttemp, {
+        msg,
+        color,
+    });
+    $chat.insertAdjacentHTML('beforeend', htmllink);
+    return;
 });
 
 const sendMessages = () => {
@@ -106,3 +116,5 @@ $locButton.addEventListener('click', () => {
         );
     });
 });
+
+socket.emit('join', { username, roomname });
