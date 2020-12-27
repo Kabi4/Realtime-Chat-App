@@ -16,6 +16,7 @@ const $chat = document.querySelector('#chat');
 const $msgchattemp = document.querySelector('#message-template').innerHTML;
 const $locchattemp = document.querySelector('#location-template').innerHTML;
 const $alerttemp = document.querySelector('#alert-template').innerHTML;
+const $sidebartemp = document.querySelector('#sidebar-template').innerHTML;
 
 const { username, roomname } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -59,7 +60,7 @@ $input.addEventListener('keydown', (e) => {
     }
 });
 
-socket.on('chatMessage', (msg, isLocation, createdAt) => {
+socket.on('chatMessage', (username, msg, isLocation, createdAt) => {
     // const m = document.createElement('p');
     // m.textContent = msg;
     // $chat.appendChild(m);
@@ -75,6 +76,7 @@ socket.on('chatMessage', (msg, isLocation, createdAt) => {
             msg: msg,
             link: isLocation,
             createdAt,
+            username,
         });
         $chat.insertAdjacentHTML('beforeend', htmllink);
         return;
@@ -82,6 +84,7 @@ socket.on('chatMessage', (msg, isLocation, createdAt) => {
     const htmlmsg = Mustache.render($msgchattemp, {
         msg,
         createdAt,
+        username,
     });
     $chat.insertAdjacentHTML('beforeend', htmlmsg);
 });
@@ -122,4 +125,19 @@ socket.emit('join', { username, roomname });
 socket.on('error', (error) => {
     alert(error);
     location.href = '/';
+});
+
+socket.on('updateList', (roomname, users) => {
+    const findMe = users.findIndex(
+        (ele) => ele.username === username.trim().toLowerCase()
+    );
+    if (findMe !== -1)
+        users[findMe].username = `${users[findMe].username} (YOU)`;
+    // console.log(users);
+    const html = Mustache.render($sidebartemp, {
+        roomname,
+        users,
+    });
+
+    document.querySelector('#sidebar').innerHTML = html;
 });

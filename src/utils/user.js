@@ -68,6 +68,7 @@ const getUser = ({ id }) => {
 
 const getAllUserInRoom = ({ roomname }) => {
     const usersRoom = users.filter((ele) => ele.roomname === roomname);
+
     // console.log(usersRoom);
     return usersRoom;
 };

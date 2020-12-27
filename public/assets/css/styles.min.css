@@ -29,4 +29,13 @@
         text-shadow: 2px 2px 10px black;
         margin: 10px auto;
         text-align: center;
-    }
+    }.dot {
+        height: 10px;
+        width: 10px;margin-left: 10px;
+        background-color: lawngreen;
+        border-radius: 99%;
+        display: inline-block;
+      }.list-title{
+          display: flex;
+          align-items: center;
+      }
