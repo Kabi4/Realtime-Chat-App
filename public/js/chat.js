@@ -18,6 +18,31 @@ const $locchattemp = document.querySelector('#location-template').innerHTML;
 const $alerttemp = document.querySelector('#alert-template').innerHTML;
 const $sidebartemp = document.querySelector('#sidebar-template').innerHTML;
 
+const autoScroll = () => {
+    const $lastmsg = $chat.lastElementChild;
+
+    const $marginsHieght =
+        parseInt(getComputedStyle($lastmsg).marginBottom) +
+        parseInt(getComputedStyle($lastmsg).marginTop);
+
+    const $lastmsgHieght = $lastmsg.offsetHeight + $marginsHieght;
+
+    // console.log($lastmsgHieght);
+
+    const $visibleHieght = $chat.offsetHeight;
+
+    const $containerHieght = $chat.scrollHeight;
+
+    const $scrollOffset = $chat.scrollTop + $visibleHieght;
+
+    if (
+        $containerHieght - $lastmsgHieght <=
+        $scrollOffset + $scrollOffset * 0.1
+    ) {
+        $chat.scrollTop = $chat.scrollHeight;
+    }
+};
+
 const { username, roomname } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
 });
@@ -28,6 +53,7 @@ socket.on('message', (msg, color) => {
         color,
     });
     $chat.insertAdjacentHTML('beforeend', htmllink);
+    autoScroll();
     return;
 });
 
@@ -79,6 +105,7 @@ socket.on('chatMessage', (username, msg, isLocation, createdAt) => {
             username,
         });
         $chat.insertAdjacentHTML('beforeend', htmllink);
+        autoScroll();
         return;
     }
     const htmlmsg = Mustache.render($msgchattemp, {
@@ -87,6 +114,7 @@ socket.on('chatMessage', (username, msg, isLocation, createdAt) => {
         username,
     });
     $chat.insertAdjacentHTML('beforeend', htmlmsg);
+    autoScroll();
 });
 
 $locButton.addEventListener('click', () => {
